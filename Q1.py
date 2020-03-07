@@ -38,10 +38,10 @@ def findPossibleMovements(i, j, k, action):
         temp=[[0, 0, 0, 1]]
         return temp
     elif action == 1 and ( j == 0 or k == 0 ):
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp
     elif action == 2 and k == 0:
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp    
 
 delta=0.001
@@ -51,7 +51,7 @@ actions = [1, 2, 3] #1 is shoot, 2 is dodge, 3 is recharge
 
 gamma = 0.99
 
-X = 1
+X = 0.5
 
 penalty = -10/X
 
@@ -79,39 +79,19 @@ while True:
                             val+=((penalty+10+gamma*utilities[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
                         else:
                             val+=((penalty+gamma*(utilities[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    if maxVal < val:
-                        maxAction = action
-                        maxVal=val
+                    if val!=0:
+                        if maxVal < val:
+                            maxAction = action
+                            maxVal=val
                 utilities1[i][j][k]=maxVal
-                val_array.append(maxVal)
+                if maxAction==1:
+                    f1.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==2:
+                    f1.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==3:
+                    f1.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(maxVal, 3)+"]\n")
                 if abs(utilities1[i][j][k]-utilities[i][j][k])<delta:
                     count+=1
-    ind=0
-    for i in range(1, 5):
-        for j in range(0, 4):
-            for k in range(0, 3):
-                maxValArray=[]
-                maxAction=0
-                for action in actions:
-                    val=0
-                    possibleMovements = findPossibleMovements(i, j, k, action)
-                    for temps in possibleMovements:
-                        if i+temps[0]==0:
-                            val+=((penalty+10+gamma*utilities1[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
-                        else:
-                            val+=((penalty+gamma*(utilities1[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    maxValArray.append(val)
-                if maxValArray[0] >= maxValArray[1]:
-                    if maxValArray[0] >= maxValArray[2]:
-                        f1.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f1.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                else:
-                    if maxValArray[1]>=maxValArray[2]:
-                        f1.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f1.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                ind+=1
     index+=1
     f1.write("\n")
     f1.write("\n")
@@ -147,10 +127,10 @@ def findPossibleMovements2(i, j, k, action):
         temp=[[0, 0, 0, 1]]
         return temp
     elif action == 1 and ( j == 0 or k == 0 ):
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp
     elif action == 2 and k == 0:
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp    
 
 delta2=0.001
@@ -190,39 +170,19 @@ while True:
                             val+=((penatly2(action)+10+gamma2*utilities2[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
                         else:
                             val+=((penatly2(action)+gamma2*(utilities2[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    if maxVal < val:
-                        maxAction = action
-                        maxVal=val
+                    if val!=0:
+                        if maxVal < val:
+                            maxAction = action
+                            maxVal=val
                 utilities12[i][j][k]=maxVal
-                val_array.append(maxVal)
+                if maxAction==1:
+                    f2.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==2:
+                    f2.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==3:
+                    f2.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(maxVal, 3)+"]\n")
                 if abs(utilities12[i][j][k]-utilities2[i][j][k])<delta2:
                     count+=1
-    ind=0
-    for i in range(1, 5):
-        for j in range(0, 4):
-            for k in range(0, 3):
-                maxValArray=[]
-                maxAction=0
-                for action in actions2:
-                    val=0
-                    possibleMovements = findPossibleMovements2(i, j, k, action)
-                    for temps in possibleMovements:
-                        if i+temps[0]==0:
-                            val+=((penatly2(action)+10+gamma2*utilities12[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
-                        else:
-                            val+=((penatly2(action)+gamma2*(utilities12[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    maxValArray.append(val)
-                if maxValArray[0] >= maxValArray[1]:
-                    if maxValArray[0] >= maxValArray[2]:
-                        f2.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f2.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                else:
-                    if maxValArray[1]>=maxValArray[2]:
-                        f2.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f2.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                ind+=1
     index2+=1
     f2.write("\n")
     f2.write("\n")
@@ -258,10 +218,10 @@ def findPossibleMovements3(i, j, k, action):
         temp=[[0, 0, 0, 1]]
         return temp
     elif action == 1 and ( j == 0 or k == 0 ):
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp
     elif action == 2 and k == 0:
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp    
 
 delta3=0.001
@@ -296,39 +256,20 @@ while True:
                             val+=((penalty3+10+gamma3*utilities3[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
                         else:
                             val+=((penalty3+gamma3*(utilities3[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    if maxVal < val:
-                        maxAction = action
-                        maxVal=val
+                    if val!=0:
+                        if maxVal < val:
+                            maxAction = action
+                            maxVal=val
                 utilities13[i][j][k]=maxVal
-                val_array.append(maxVal)
+                if maxAction==1:
+                    f3.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==2:
+                    f3.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==3:
+                    f3.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(maxVal, 3)+"]\n")
+
                 if abs(utilities13[i][j][k]-utilities3[i][j][k])<delta3:
                     count+=1
-    ind=0
-    for i in range(1, 5):
-        for j in range(0, 4):
-            for k in range(0, 3):
-                maxValArray=[]
-                maxAction=0
-                for action in actions3:
-                    val=0
-                    possibleMovements = findPossibleMovements3(i, j, k, action)
-                    for temps in possibleMovements:
-                        if i+temps[0]==0:
-                            val+=((penalty3+10+gamma3*utilities13[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
-                        else:
-                            val+=((penalty3+gamma3*(utilities13[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    maxValArray.append(val)
-                if maxValArray[0] >= maxValArray[1]:
-                    if maxValArray[0] >= maxValArray[2]:
-                        f3.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f3.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                else:
-                    if maxValArray[1]>=maxValArray[2]:
-                        f3.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f3.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                ind+=1
     index3+=1
     f3.write("\n")
     f3.write("\n")
@@ -363,10 +304,10 @@ def findPossibleMovements4(i, j, k, action):
         temp=[[0, 0, 0, 1]]
         return temp
     elif action == 1 and ( j == 0 or k == 0 ):
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp
     elif action == 2 and k == 0:
-        temp=[[0, 0, 0, 1]]
+        temp=[[0, 0, 0, 0]]
         return temp    
 
 delta4=0.0000000001
@@ -401,39 +342,20 @@ while True:
                             val+=((penalty4+10+gamma4*utilities4[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
                         else:
                             val+=((penalty4+gamma4*(utilities4[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    if maxVal < val:
-                        maxAction = action
-                        maxVal=val
+                    if val!=0:
+                        if maxVal < val:
+                            maxAction = action
+                            maxVal=val
                 utilities14[i][j][k]=maxVal
-                val_array.append(maxVal)
+                if maxAction==1:
+                    f4.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==2:
+                    f4.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(maxVal, 3)+"]\n")
+                elif maxAction==3:
+                    f4.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(maxVal, 3)+"]\n")
+
                 if abs(utilities14[i][j][k]-utilities4[i][j][k])<delta4:
                     count+=1
-    ind=0
-    for i in range(1, 5):
-        for j in range(0, 4):
-            for k in range(0, 3):
-                maxValArray=[]
-                maxAction=0
-                for action in actions4:
-                    val=0
-                    possibleMovements = findPossibleMovements4(i, j, k, action)
-                    for temps in possibleMovements:
-                        if i+temps[0]==0:
-                            val+=((penalty4+10+gamma4*utilities14[i+temps[0]][j+temps[1]][k+temps[2]])*temps[3])
-                        else:
-                            val+=((penalty4+gamma4*(utilities14[i+temps[0]][j+temps[1]][k+temps[2]]))*temps[3])
-                    maxValArray.append(val)
-                if maxValArray[0] >= maxValArray[1]:
-                    if maxValArray[0] >= maxValArray[2]:
-                        f4.write("("+str(i)+","+str(j)+","+str(k)+"):SHOOT=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f4.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                else:
-                    if maxValArray[1]>=maxValArray[2]:
-                        f4.write("("+str(i)+","+str(j)+","+str(k)+"):DODGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                    else:
-                        f4.write("("+str(i)+","+str(j)+","+str(k)+"):RECHARGE=["+"%.3f"%round(val_array[ind], 3)+"]\n")
-                ind+=1
     index4+=1
     f4.write("\n")
     f4.write("\n")
